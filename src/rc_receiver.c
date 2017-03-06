@@ -1,74 +1,95 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <stdio.h>
 #include "rc_receiver_interface.h"
 
-uint16_t prev_time, current_time, time_dif, prev_time2, current_time2, time_dif2;
+// Define global variables
+uint16_t duty_cycle[4];
 uint8_t previous_bits = 0xFF;
 
-void init_TIMER1(){
 
-	TCCR1B |=  1<<CS12 | 1<<CS10; //prescaler set to 1024
-	TCNT1 = 0;//initialize counter
+// Initialise the receiver.
+void receiver_init() {
+	/////////////////////////////// TIMER1 initialization/////////////////////////////////////////
+	TCCR1B |=  _BV(CS11) | _BV(CS10); 	// Set prescaler set to 64. This ensures
+										// that the resolution is 250, which should begin
+										// sufficient for the purpose of measuring the duty cycle
+										// of PWM signals. If we would like to change the accuracy
+										// to ~2000, prescaler would need to be set to 1024 
+	TCNT1 = 0;	// Initialize the counter
+	/////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/////////////////////////////// Enabling Pin Changing Interrupts /////////////////////////////
+	DDRC &= ~((1<<DDC0)|(1<<DDC1)|(1<<DDC2)|(1<<DDC3));		// Enable pin PC0, PC1, PC2 
+															// and PC3 as inputs.
+	PORTC = (1<<PORTC0)|(1<<PORTC1)|(1<<PORTC2)|(1<<PORTC3);	// Enable pull-up resistor  
+																// on pin PC0, PC1, PC2 & PC3.
+	PCICR |= 1<<PCIE1; 	// Enable pin change interrupt 1
+	PCMSK1 |= (1<<PCINT8)|(1<<PCINT9)|(1<<PCINT10)|(1<<PCINT11);	// Enable pin change interrupt 
+																	// on the corresponding to
+																	// I/O (PC0, PC1, PC2 & PC3).
+	//////////////////////////////////////////////////////////////////////////////////////////////
 }
 
-void init_PWM_interupt(){
-	DDRC &= ~((1<<DDC0) | (1<<DDC1)); //enable pin PC5 & PC6 as input
-	PORTC = (1<< PORTC0) | (1<< PORTC1); //enable pull-up resistor on pin PC5 & PC6
-	PCICR |= 1<<PCIE1; // enable pin change interrupt 1
-	PCMSK1 |= (1<<PCINT8) | (1<<PCINT9); //enable pin change interrupt on the corresponding I/O (PC5 & PC6)
-	sei(); //enable interrupts
-}
+// Interrupt service rutine for handling the measurements of the duty cycles of the PWM signals 
+// produced by the RC receiver. In the code we assumed 4 channels. The crresponding pins are:
+// PC0, PC1, PC2 and PC3.
 ISR(PCINT1_vect){
-
 	uint8_t change_bits;
-
-    PORTB ^= 1<<PB5; // LED toggle (PB5)
-
-    //calculate time difference of the pulse
-    change_bits = previous_bits^PINC;
-
-    //check which bit has changed, there is an issue that with a PWM input
-    //that is created by the same time the change of the inputs occurs exactly at the same time, therefore, one of the inputs is measured every other
-    //if the inputs start at different time, the correct PWM duty cycle should be measured
-    //the timer has to be set appropriately in order to avoid the overflow
-    if (change_bits & (1<<PC0) ){
-
-        current_time = TCNT1;
-        if (prev_time>current_time)
-        	time_dif = 65535-prev_time+current_time; //65535 is set, because we are using 16 bit timer and this is the TOP value
+	change_bits = previous_bits^PINC;
+	
+	// The following 4 if statements calculetes the difference in the time that passed beetwen
+	// consecutive edges of the PWM signals. In the function we also handle the case when the 
+	// counter overflows to ensure aprioprate duty cycle calculation. The duty cycle is eventually
+	// calculated by subtracting 415 from the obtained time difference. This value correspond to 
+	// 1000us. The 1ms-2ms pulses are, hence, mapped to a 0-250 range of values.
+	if(change_bits & (1<<PC0) ){ 
+        current_time[0] = TCNT1;
+        if(prev_time[0]>current_time[0])
+			time_dif[0] = 65535-prev_time[0]+current_time[0];
+          else
+			time_dif[0]=current_time[0]-prev_time[0];
+			prev_time[0] = TCNT1;
+			if (previous_bits & (1<<PC0))
+				duty_cycle[0]=time_dif[0]-415;
+       }
+    if(change_bits & (1<<PC1) ){
+        current_time[1] = TCNT1;
+        if (prev_time[1]>current_time[1])
+        	time_dif[1] = 65535-prev_time[1]+current_time[1];
         else
-        	time_dif=current_time-prev_time;
-        prev_time = TCNT1;
-
-        //only print if changed from logic 1 to 0 (falling edge)
-        if(previous_bits& (1<<PC0))
-        	printf("PC0 duty cycle: %d\n",time_dif);
-
-    }else if(change_bits & (1<<PC1) ){ // repeat the same for the second pin
-
-        current_time2 = TCNT1;
-        if (prev_time2>current_time2)
-        	time_dif2 = 65535-prev_time2+current_time2;
-        else
-        	time_dif2=current_time2-prev_time2;
-        prev_time2 = TCNT1;
-
+        	time_dif[1]=current_time[1]-prev_time[1];
+        prev_time[1] = TCNT1;
         if (previous_bits & (1<<PC1))
-        		printf("PC1 duty cycle: %d\n",time_dif2);
+        	duty_cycle[1]=time_dif[1]-415;
     }
-    //the above two parts of code will be repeated for pins PC2, PC3, PC4, PC5 giving overall 6 PWM inputs that will be used as a controll signals
+    if(change_bits & (1<<PC2) ){ 
+        current_time[2] = TCNT1;
+        if (prev_time[2]>current_time[2])
+        	time_dif[2] = 65535-prev_time[2]+current_time[2];
+        else
+        	time_dif[2]=current_time[2]-prev_time[2];
+        prev_time[2] = TCNT1;
+        if (previous_bits & (1<<PC2))
+        	duty_cycle[2]=time_dif[2]-415;
+    }
+    if(change_bits & (1<<PC3) ){
+        current_time[3] = TCNT1;
+        if (prev_time[3]>current_time[3])
+        	time_dif[3] = 65535-prev_time[3]+current_time[3];
+        else
+        	time_dif[3]=current_time[3]-prev_time[3];
+        prev_time[3] = TCNT1;
+        if (previous_bits & (1<<PC3))
+        	duty_cycle[3]=time_dif[3]-415;
+    }
     previous_bits = PINC;
-
-
 }
 
-int main(void) {
-
-    DDRB |= 1<<PB5; // set PB5 to output
-    init_TIMER1();
-    init_PWM_interupt();
-    init_debug_uart0();
-
-    while(1);
+// This function reads the current input signlas from the RC receiver and puts them into 
+// the data structure that will be send to the control module
+void receive_rc_packet(&rc_data_packet){
+	rc_data_packet->channel_0 = duty_cycle[0];
+	rc_data_packet->channel_1 = duty_cycle[1];
+	rc_data_packet->channel_2 = duty_cycle[2];
+	rc_data_packet->channel_3 = duty_cycle[3];
 }
