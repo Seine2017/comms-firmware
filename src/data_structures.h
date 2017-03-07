@@ -67,7 +67,9 @@ typedef struct{
 
 //Define a structure to be send to the host microcontroller
 typedef struct{
-	
+	float roll;
+	float pitch;
+	float yaw_vel;
 }host_data_packet_t;
 
 #endif
