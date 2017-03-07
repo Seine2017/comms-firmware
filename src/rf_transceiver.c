@@ -48,9 +48,19 @@ void send_rf_packet(rf_data_packet_t* rf_data_packet)
 	sendByte(0xD4);
 	
 	//DATA. Send the actual data packet.
-	for(i=0; i<16; i++) 
+	for(i=0; i<4; i++) 
 	{
-		sendByte(rf_data_packet->dataBytes[i]);	
+		sendByte(rf_data_packet->roll.bytes[i]);		//Send roll.
+	}
+	
+	for(i=0; i<4; i++) 
+	{
+		sendByte(rf_data_packet->pitch.bytes[i]);		//Send pitch.
+	}
+	
+	for(i=0; i<4; i++) 
+	{
+		sendByte(rf_data_packet->yaw_vel.bytes[i]);		//Send yaw velocity.
 	}
 	
 	//DUMMY BYTES. Again, not required.
@@ -62,11 +72,24 @@ void send_rf_packet(rf_data_packet_t* rf_data_packet)
 // Declare a function to receive a data packet from the RF receiver using SPI
 void receive_rf_packet(rf_data_packet_t* rf_data_packet)
 {
+	//Loop variable.
+	uint8_t i;
+	
 	//Receive data bytes. 
 	//The receiveByte command will only return data bytes, not the preamble/sync bytes.
-	for (i=0; i<16; i++) 
-	{
-		data = receiveByte();		
+	for(i=0 ; i<4 ; i++)
+	{		
+		rf_data_packet->roll.bytes[i] = receiveByte();		//Receive roll.
+	}
+	
+	for(i=0 ; i<4 ; i++)
+	{		
+		rf_data_packet->pitch.bytes[i] = receiveByte();		//Receive pitch.
+	}
+	
+	for(i=0 ; i<4 ; i++)
+	{		
+		rf_data_packet->yaw_vel.bytes[i] = receiveByte();	//Receive yaw velocity.
 	}
 
 	//Reset the FIFO buffer. Need to do this before receiving every packet.

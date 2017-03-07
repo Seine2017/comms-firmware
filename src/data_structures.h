@@ -20,7 +20,23 @@ typedef struct{
 
 // Define a structure for the data packet to be send to the host microcontroller
 typedef struct{
-	uint8_t dataBytes[16];
+	union
+	{
+		uint8_t bytes[4];
+		float value;
+	}roll;
+	
+	union
+	{
+		uint8_t bytes[4];
+		float value;
+	}pitch;
+	
+	union
+	{
+		uint8_t bytes[4];
+		float value;
+	}yaw_vel;
 }rf_data_packet_t;
 
 //Define a structure for data encryption
