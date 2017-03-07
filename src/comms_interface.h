@@ -1,4 +1,4 @@
-// This file specifies the interface between the inter-pprocessor communication
+// This file specifies the interface between the inter-processor communication
 // code (written by Kiran) and the control code (written by Kier)
 
 #ifndef __CONTROL_INTERFACE_H
