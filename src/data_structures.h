@@ -55,16 +55,6 @@ typedef struct{
 	}yaw_vel;
 }rf_data_packet_t;
 
-//Define a structure for data encryption
-typedef struct{
-	
-}encrypted_data_packet_t;
-
-//Define a structure for data decryption
-typedef struct{
-	
-}decrypted_data_packet_t;
-
 //Define a structure to be send to the host microcontroller
 typedef struct{
 	float roll;
