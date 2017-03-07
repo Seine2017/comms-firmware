@@ -1,7 +1,7 @@
 #include "clock.h" // to be consider as a way for handling the timing
 #include "control_interface.h"
 #include "rc_receiver_interface.h"
-#include "rf_receiver_interface.h"
+#include "rf_transceiver_interface.h"
 
 // Define the data packets that will flow through the communication module
 // as global variables
