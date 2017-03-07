@@ -104,3 +104,4 @@ void put_into_rf_packet(rf_data_packet_t* rf_data_packet, float roll, float pitc
 	rf_data_packet->pitch.value = pitch;
 	rf_data_packet->yaw_vel.value = yaw_vel;
 }
+
