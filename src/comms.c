@@ -1,7 +1,7 @@
 
 #include "control_interface.h"
 #include "data_structures.h"
-#include "SPI.h" // we have to define the library
+#include "spi.c"
 
 // Define a function to initialize SPI communication with the control module
 void comms_master_init(){

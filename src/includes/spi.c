@@ -25,11 +25,11 @@ void init_timer_and_interrupts(void)
  	TCCR1A = 0;
  	TCCR1B = _BV(WGM12);
  
- 	TCCR1B |= _BV(CS12) | _BV(CS10);	  //Use 500ms as the interrupt period.
- 	OCR1A = 5859;				  //ie 20 Hz interrupt frequency.
+ 	TCCR1B |= _BV(CS12) | _BV(CS10);	//Use 500ms as the interrupt period.
+ 	OCR1A = 5859;				  		//ie 20 Hz interrupt frequency.
 
- 	TIMSK1 |= _BV(OCIE1A);			  //Enable timer interrupt.
- 	sei();					  //Enable global interrupts.
+ 	TIMSK1 |= _BV(OCIE1A);			  	//Enable timer interrupt.
+ 	sei();					  			//Enable global interrupts.
 }
 
 void init_pin_change_interrupts(void)
