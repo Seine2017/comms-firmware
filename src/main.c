@@ -2,6 +2,7 @@
 #include "comms_interface.h"
 #include "rc_receiver_interface.h"
 #include "rf_transceiver_interface.h"
+#include "data_conversion.h"
 #include <avr/interrupt.h>
 
 // Define the data packets that will flow through the communication module
@@ -45,12 +46,12 @@ int main() {
 	//printf("Current clock diff: %d\n", (int)clock_diff(uplink_clock_current, uplink_clock_prev));
 		
 	if(clock_diff(uplink_clock_prev, uplink_clock_current)>=20){
-		printf("Receiving RC PWM data...\n");
+		//printf("Receiving RC PWM data...\n");
 		
 		// Obtain the inputs from the Remote Control receiver		
 		receive_rc_packet(&rc_data_packet);
 		
-		printf("Received PWM data: %d, %d, %d, %d\n",  rc_data_packet.channel_0, rc_data_packet.channel_1, rc_data_packet.channel_2, rc_data_packet.channel_3);
+		//printf("Received PWM data: %d, %d, %d, %d\n",  rc_data_packet.channel_0, rc_data_packet.channel_1, rc_data_packet.channel_2, rc_data_packet.channel_3);
 		
 		// Communicate with the control module to send the input sinals
 		send_master_data_packet(&rc_data_packet);
@@ -67,14 +68,20 @@ int main() {
     
 	downlink_clock_current = clock_get_time();
 	
-	if(clock_diff(downlink_clock_current, downlink_clock_prev)>=40){
+	if(clock_diff(downlink_clock_prev, downlink_clock_current)>=40){
 		// Communicate with control module to obtain the logging data.
 		receive_master_data_packet(&logg_data_packet);
 
 		// Encode the data. Here is the place for some encryption algorithm
-		// encode_data(&logg_data_packet, &rf_data_packet);							//Not yet implemented :<
+		encode_data(&logg_data_packet, &rf_data_packet);
+
+		//printf("encode: %d, %d, %d\n done: %d, %d, %d\n", (int)logg_data_packet.roll.value, (int)logg_data_packet.pitch.value, (int)logg_data_packet.yaw_vel.value,
+		//													(int)rf_data_packet.roll.value,   (int)rf_data_packet.pitch.value,   (int)rf_data_packet.yaw_vel.value);
 
 		// Send data to the RF module to wirelessly transmit the logging data to the host computer.
+		//rf_data_packet.pitch.value = 0.5;
+		//rf_data_packet.roll.value = -3.5;
+		//rf_data_packet.yaw_vel.value = 3.1415;
 		send_rf_packet(&rf_data_packet);
 		
 		// Record the time point at the end of last data transmission.

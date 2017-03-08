@@ -25,12 +25,13 @@ void comms_slave_init()
 // communication module to the control module. Doing this at 50 Hz.
 void send_master_data_packet(rc_data_packet_t* rc_data_packet)
 {
-	printf("Sending RC inputs...\n");
+	//printf("Sending RC inputs...\n");
 	
 	//Send a command byte to signify that the control module should expect to receive the RC input bytes.
 	spi_tx(CMD_RECEIVE_RC_INPUTS);
 	
-	_delay_us(50);
+	//Brief delay so that the control module has time to react to the command byte.
+	_delay_us(5);
 	
 	//Send the 4 bytes of the RC input data packet.
 	spi_tx(rc_data_packet->channel_0);
@@ -38,7 +39,7 @@ void send_master_data_packet(rc_data_packet_t* rc_data_packet)
 	spi_tx(rc_data_packet->channel_2);
 	spi_tx(rc_data_packet->channel_3);
 	
-	printf("Sent RC inputs.\n");
+	//printf("Sent RC inputs.\n");
 }
 
 // Define a function to receive a data packet with logging data from the 
@@ -51,21 +52,32 @@ void receive_master_data_packet(logg_data_packet_t* logg_data_packet)
 	//Send a command byte to signify that the control module is expected to send the logging data.
 	spi_tx(CMD_SEND_LOGGING_DATA);
 	
+	//Brief delay so that the control module has time to react to the command byte.
+	_delay_us(5);
+	
+	//printf("Receiving logging data...\n");
+	
 	//Receive the logging data bytes.
 	for(i = 0 ; i < 4 ; i++)
 	{
-		logg_data_packet->roll.bytes[i] = spi_trx(0x00);		//Receive the roll bytes.
+		logg_data_packet->roll.bytes[i] = spi_trx(0x00 + i);		//Receive the roll bytes.
+		_delay_us(5);
 	}
 	
 	for(i = 0 ; i < 4 ; i++)
 	{
-		logg_data_packet->pitch.bytes[i] = spi_trx(0x00);		//Receive the pitch bytes.
+		logg_data_packet->pitch.bytes[i] = spi_trx(0x04 + i);		//Receive the pitch bytes.
+		_delay_us(5);
 	}
 	
 	for(i = 0 ; i < 4 ; i++)
 	{
-		logg_data_packet->yaw_vel.bytes[i] = spi_trx(0x00);		//Receive the yaw velocity bytes.
+		logg_data_packet->yaw_vel.bytes[i] = spi_trx(0x08 + i);		//Receive the yaw velocity bytes.
+		_delay_us(5);
 	}
+	
+	//printf("Received logging data:\n");
+	printf("Roll: %d, Pitch: %d, Yaw velocity: %d\n", (int)logg_data_packet->roll.value, (int)logg_data_packet->pitch.value, (int)logg_data_packet->yaw_vel.value);
 }
 
 // These next 2 functions operate on the control module (slave). Due to its inability to 
@@ -101,7 +113,7 @@ void send_slave_data_packet(logg_data_packet_t* logg_data_packet)
 	}
 	
 	//Re-enable SPI interrupts so one of these 2 functions can be called again when needed.
-	enable_SPI_interrupts;
+	enable_SPI_interrupts();
 }
 
 // Define a function to receive a data packet with RC inputs from the
@@ -118,5 +130,5 @@ void receive_slave_data_packet(rc_data_packet_t* rc_data_packet)
 	rc_data_packet->channel_3 = spi_rx();
 	
 	//Re-enable SPI interrupts so one of these 2 functions can be called again when needed.
-	enable_SPI_interrupts;
+	enable_SPI_interrupts();
 }
