@@ -5,6 +5,7 @@
 #ifndef __DATA_CONVERSION_H
 #define __DATA_CONVERSION_H
 
+
 void encode_data(logg_data_packet* logg_data_packet, rf_data_packet* rf_data_packet);
 // Declares a function that convertes the data received through RF communication
 // received in packets of bytes to its corresponding float numbers and puts all the data

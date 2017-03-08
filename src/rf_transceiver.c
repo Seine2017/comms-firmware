@@ -4,6 +4,7 @@
 #include "includes/transmitter.h"
 #include "includes/receiver.h"
 #include "data_structures.h"
+#include "rf_transceiver_interface.h"
 
 // Function to initialize the RF transceiver as a transmitter
 void rf_transmitter_init()
