@@ -12,6 +12,8 @@ rc_data_packet_t rc_data_packet; // data pocket with the input signals from the 
 
 int main() {
   //Initialize all the submodules
+   init_debug_uart0();
+
   receiver_init();			//Initialise RC receiver.
   rf_transmitter_init();
   comms_master_init(); 		//Initialise communication with the control module. SPI initialised in here.
@@ -19,13 +21,16 @@ int main() {
   
   //Setup the uplink and downlink clock
   clock_init();
-  clock_time_t uplink_clock_prev, uplink_clock_current;
-  clock_time_t downlink_clock_prev, downlink_clock_current;
+  clock_time_t uplink_clock_prev = 0, uplink_clock_current;
+  clock_time_t downlink_clock_prev = 0, downlink_clock_current;
+  
+  printf("Successfully initialised.\n");
 
   // We need to consider timing - at what frequency each communication link
   // operates. We can handle some of the functions in the interrupts.
   // Alternatively, we can set up a clock that will keep track of the internal
   // time in the module and execute the functions at decided frequencies accordingly
+  
   while (1) {
 
 	// The uplink communication is performed at 50Hz frequency. It obtaines the four values 
@@ -35,11 +40,18 @@ int main() {
     ////////////////////////////////////////////////////////////////////////////////////////////
     
 	uplink_clock_current = clock_get_time();
+	
+	//printf("%d\n", uplink_clock_current);
+	//printf("Current clock diff: %d\n", (int)clock_diff(uplink_clock_current, uplink_clock_prev));
 		
-	if(clock_diff(uplink_clock_current, uplink_clock_prev)>=20){
-		// Obtain the inputs from the Remote Control receiver
+	if(clock_diff(uplink_clock_prev, uplink_clock_current)>=20){
+		printf("Receiving RC PWM data...\n");
+		
+		// Obtain the inputs from the Remote Control receiver		
 		receive_rc_packet(&rc_data_packet);
-
+		
+		printf("Received PWM data: %d, %d, %d, %d\n",  rc_data_packet.channel_0, rc_data_packet.channel_1, rc_data_packet.channel_2, rc_data_packet.channel_3);
+		
 		// Communicate with the control module to send the input sinals
 		send_master_data_packet(&rc_data_packet);
 		

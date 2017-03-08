@@ -44,6 +44,3 @@ void init_debug_uart0(void)
 	stderr = &uout;
 	stdin = &uin;
 }
-
-
-

@@ -15,11 +15,11 @@
 
 // A type representing the number of clock 'ticks' since the processor was last
 // reset or powered on.
-typedef uint16_t clock_time_t;
+typedef uint32_t clock_time_t;
 
 // A type representing a time interval (the number of 'ticks' between two
 // distinct time measurements).
-typedef int16_t clock_interval_t;
+typedef int32_t clock_interval_t;
 
 // The actual number of ticks that have passed since power on.
 extern volatile clock_time_t clock_now;

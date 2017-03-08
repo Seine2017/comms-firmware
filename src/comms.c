@@ -4,6 +4,8 @@
 #include "comms_interface.h"
 #include "data_structures.h"
 #include "includes/spi.h"
+#include "debug.h"
+#include <util/delay.h>
 
 // Define a function to initialize SPI communication with the control module
 void comms_master_init()
@@ -23,14 +25,20 @@ void comms_slave_init()
 // communication module to the control module. Doing this at 50 Hz.
 void send_master_data_packet(rc_data_packet_t* rc_data_packet)
 {
+	printf("Sending RC inputs...\n");
+	
 	//Send a command byte to signify that the control module should expect to receive the RC input bytes.
 	spi_tx(CMD_RECEIVE_RC_INPUTS);
+	
+	_delay_us(50);
 	
 	//Send the 4 bytes of the RC input data packet.
 	spi_tx(rc_data_packet->channel_0);
 	spi_tx(rc_data_packet->channel_1);
 	spi_tx(rc_data_packet->channel_2);
 	spi_tx(rc_data_packet->channel_3);
+	
+	printf("Sent RC inputs.\n");
 }
 
 // Define a function to receive a data packet with logging data from the 
