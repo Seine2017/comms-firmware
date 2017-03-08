@@ -3,7 +3,8 @@
 #include "rc_receiver_interface.h"
 
 // Define global variables
-uint16_t duty_cycle[4];
+uint16_t prev_time[4], current_time[4], time_dif[4];
+volatile uint16_t duty_cycle[4];
 uint8_t previous_bits = 0xFF;
 
 
@@ -87,7 +88,7 @@ ISR(PCINT1_vect){
 
 // This function reads the current input signlas from the RC receiver and puts them into 
 // the data structure that will be send to the control module
-void receive_rc_packet(&rc_data_packet){
+void receive_rc_packet(rc_data_packet_t* rc_data_packet){
 	rc_data_packet->channel_0 = duty_cycle[0];
 	rc_data_packet->channel_1 = duty_cycle[1];
 	rc_data_packet->channel_2 = duty_cycle[2];

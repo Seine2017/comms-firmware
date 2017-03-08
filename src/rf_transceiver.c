@@ -1,8 +1,8 @@
 // This file defines the interface between the RF transmitter and the communication module
 
-#include "includes/spi.c"
-#include "includes/transmitter.c"
-#include "includes/receiver.c"
+#include "includes/spi.h"
+#include "includes/transmitter.h"
+#include "includes/receiver.h"
 #include "data_structures.h"
 
 // Function to initialize the RF transceiver as a transmitter

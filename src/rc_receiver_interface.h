@@ -6,12 +6,9 @@
 #ifndef __RC_RECEIVER_INTERFACE_H
 #define __RC_RECEIVER_INTERFACE_H
 
-// Define global variables
-uint16_t prev_time[4], current_time[4], time_dif[4], duty_cycle[4];
-
 // Initialise the receiver. In order to make this function work we also need to initialize 
 // interrupts - 'sei();'.
 void receiver_init();
-void receive_rc_packet(&rc_data_packet);
+void receive_rc_packet(rc_data_packet_t* rc_data_packet);
 
 #endif
