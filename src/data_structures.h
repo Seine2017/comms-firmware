@@ -4,6 +4,8 @@
 #ifndef __DATA_STRUCTURES_H
 #define __DATA_STRUCTURES_H
 
+#include <avr/io.h>
+
 // Define a structure for the data packet to be send to the control module
 typedef struct{
 	uint8_t channel_0;
@@ -54,6 +56,16 @@ typedef struct{
 		float value;
 	}yaw_vel;
 }rf_data_packet_t;
+
+//Define a structure for data encryption
+typedef struct{
+	
+}encrypted_data_packet_t;
+
+//Define a structure for data decryption
+typedef struct{
+	
+}decrypted_data_packet_t;
 
 //Define a structure to be send to the host microcontroller
 typedef struct{
