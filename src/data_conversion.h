@@ -5,11 +5,10 @@
 #ifndef __DATA_CONVERSION_H
 #define __DATA_CONVERSION_H
 
-// Encode the data. For now we are just passing the data without any encryption
 void encode_data(logg_data_packet* logg_data_packet, rf_data_packet* rf_data_packet);
-
-// Decode the data. For now we are just passing the data from one structure to another
-// without any decryption. 
-void decode_data(&rf_data_packet, &host_data_packet);
+// Declares a function that convertes the data received through RF communication
+// received in packets of bytes to its corresponding float numbers and puts all the data
+// into the structure to send the data to the host
+void decode_data(rf_data_packet_t* rf_data_packet, host_data_packet_t* host_data_packet);
 
 #endif
