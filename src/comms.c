@@ -1,7 +1,7 @@
 // This file specifies the interface between the inter-processor communication
 // code (written by Kiran) and the control code (written by Kier)
 
-#include "control_interface.h"
+#include "comms_interface.h"
 #include "data_structures.h"
 #include "includes/spi.h"
 

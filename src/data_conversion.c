@@ -2,13 +2,13 @@
 // RF receiver and its corresponding floating point numbers.(Written by Dominic) The data is 
 // further put into data structure that will be send to  the host computer for telemetry purposes.
 
-#include "data_structures.h"
+#include "data_conversion.h"
 
 // Encode the data
-void encode_data(logg_data_packet* logg_data_packet, rf_data_packet* rf_data_packet){
-	rf_data_packet->roll = logg_data_packet->roll.value;
-	rf_data_packet->pitch = logg_data_packet->pitch.value;
-	rf_data_packet->yaw_vel = logg_data_packet->yaw_vel.value;
+void encode_data(logg_data_packet_t* logg_data_packet, rf_data_packet_t* rf_data_packet){
+	rf_data_packet->roll.value = logg_data_packet->roll.value;
+	rf_data_packet->pitch.value = logg_data_packet->pitch.value;
+	rf_data_packet->yaw_vel.value = logg_data_packet->yaw_vel.value;
 }
 
 // Decode the data

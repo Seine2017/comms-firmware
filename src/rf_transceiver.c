@@ -4,6 +4,7 @@
 #include "includes/transmitter.h"
 #include "includes/receiver.h"
 #include "data_structures.h"
+#include "rf_transceiver_interface.h"
 
 // Function to initialize the RF transceiver as a transmitter
 void rf_transmitter_init()
@@ -26,7 +27,7 @@ void send_rf_packet(rf_data_packet_t* rf_data_packet)
 	int i;
 	
 	//Read status register. Needed before we can start transmitting.
-	writeCommand(0x0000);				
+	writeCommandTx(0x0000);				
 		
 	//PREAMBLE. Not strictly required.
 	sendByte(0xAA); 					

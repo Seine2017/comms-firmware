@@ -4,6 +4,8 @@
 #ifndef __CONTROL_INTERFACE_H
 #define __CONTROL_INTERFACE_H
 
+#include "data_structures.h"
+
 // Define a function to initialize SPI communication with the control module
 void comms_master_init();
 

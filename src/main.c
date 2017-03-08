@@ -2,6 +2,7 @@
 #include "comms_interface.h"
 #include "rc_receiver_interface.h"
 #include "rf_transceiver_interface.h"
+#include <avr/interrupt.h>
 
 // Define the data packets that will flow through the communication module
 // as global variables
@@ -11,15 +12,15 @@ rc_data_packet_t rc_data_packet; // data pocket with the input signals from the 
 
 int main() {
   //Initialize all the submodules
-  rc_receiver_init();
+  receiver_init();			//Initialise RC receiver.
   rf_transmitter_init();
   comms_master_init(); 		//Initialise communication with the control module. SPI initialised in here.
   sei(); 					//Enable interrupts.
   
   //Setup the uplink and downlink clock
   clock_init();
-  clock_time_t = uplink_clock_prev, uplink_clock_current;
-  clock_time_t = downlink_clock_prev, downlink_clock_current;
+  clock_time_t uplink_clock_prev, uplink_clock_current;
+  clock_time_t downlink_clock_prev, downlink_clock_current;
 
   // We need to consider timing - at what frequency each communication link
   // operates. We can handle some of the functions in the interrupts.
@@ -40,7 +41,7 @@ int main() {
 		receive_rc_packet(&rc_data_packet);
 
 		// Communicate with the control module to send the input sinals
-		send_data_packet(&rc_data_packet);
+		send_master_data_packet(&rc_data_packet);
 		
 		// Record the time point at the end of last data transmission.
 		uplink_clock_prev = clock_get_time();
@@ -56,10 +57,10 @@ int main() {
 	
 	if(clock_diff(downlink_clock_current, downlink_clock_prev)>=40){
 		// Communicate with control module to obtain the logging data.
-		receive_data_packet(&logg_data_packet);
+		receive_master_data_packet(&logg_data_packet);
 
 		// Encode the data. Here is the place for some encryption algorithm
-		encode_data(&logg_data_packet, &rf_data_packet);
+		// encode_data(&logg_data_packet, &rf_data_packet);							//Not yet implemented :<
 
 		// Send data to the RF module to wirelessly transmit the logging data to the host computer.
 		send_rf_packet(&rf_data_packet);

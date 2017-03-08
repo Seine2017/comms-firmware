@@ -9,7 +9,7 @@
 void portInitTx(void)
 {
 	DDRD &= ~_BV(2);					//nIRQ input to indicate previous transmission ended.
-	DDRA |= _BV(4) | _BV(5) |  _BV(7);	//Put transmitter's SPI interface on port A.
+	DDRD |= _BV(4) | _BV(5) |  _BV(7);	//Put transmitter's SPI interface on port D.
 }
 
 uint16_t writeCommandTx(uint16_t cmd)
@@ -18,31 +18,31 @@ uint16_t writeCommandTx(uint16_t cmd)
  	  uint8_t i;				//for loop variable.
  	  uint16_t temp = 0;		//Received data if reading the status register.
 
- 	  PORTA &= ~_BV(7); 		//Set SCLK low.
- 	  PORTA &= ~_BV(4);			//Set slave select low to select the RFM12B module.
+ 	  PORTD &= ~_BV(7); 		//Set SCLK low.
+ 	  PORTD &= ~_BV(4);			//Set slave select low to select the RFM12B module.
  	  for(i=0 ; i<16 ; i++)
 	  {
  		if(cmd & 0x8000)		//If the MSB of the command is high...
 		{
- 			PORTA |= _BV(5);	//set MOSI high.
+ 			PORTD |= _BV(5);	//set MOSI high.
  		}
 		else					//Else...
 		{
- 			PORTA &= ~_BV(5);	//set MOSI low.
+ 			PORTD &= ~_BV(5);	//set MOSI low.
  		} 
  
 
- 		PORTA |= _BV(7);		//Set SCLK high to clock the RFM12B module.
+ 		PORTD |= _BV(7);		//Set SCLK high to clock the RFM12B module.
 		temp <<= 1;				//Shift temp left by 1.
 
 		if(PINA & _BV(6))		//If MISO is high...
 		{
  			temp |= 0x0001;		//set the LSB of temp to 1. Implied else means it is set to 0.
  		}
- 		PORTA &= ~_BV(7); 		//Set SCLK low;
+ 		PORTD &= ~_BV(7); 		//Set SCLK low;
  		cmd <<= 1;			//Shift the command left by 1. The new MSB is the next bit which is used in the next loop.
  	  }
- 	  PORTA |= _BV(4);			//Set slave select high to deselect the RFM12B module.
+ 	  PORTD |= _BV(4);			//Set slave select high to deselect the RFM12B module.
  	  return(temp);				//Return the contents of the status register if it was read.
 	
 }

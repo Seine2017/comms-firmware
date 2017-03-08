@@ -6,6 +6,8 @@
 #ifndef __RC_RECEIVER_INTERFACE_H
 #define __RC_RECEIVER_INTERFACE_H
 
+#include "data_structures.h"
+
 // Initialise the receiver. In order to make this function work we also need to initialize 
 // interrupts - 'sei();'.
 void receiver_init();
