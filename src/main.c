@@ -1,5 +1,5 @@
 #include "clock.h" // to be consider as a way for handling the timing
-#include "control_interface.h"
+#include "comms_interface.h"
 #include "rc_receiver_interface.h"
 #include "rf_transceiver_interface.h"
 
@@ -13,9 +13,8 @@ int main() {
   //Initialize all the submodules
   rc_receiver_init();
   rf_transmitter_init();
-  SPI_init(); //defined by Kiran
-  comms_init(); // initialize communication with the control module
-  sei(); // enable interrups
+  comms_master_init(); 		//Initialise communication with the control module. SPI initialised in here.
+  sei(); 					//Enable interrupts.
   
   //Setup the uplink and downlink clock
   clock_init();
