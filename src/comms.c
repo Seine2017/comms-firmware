@@ -3,7 +3,7 @@
 
 #include "control_interface.h"
 #include "data_structures.h"
-#include "includes/spi.c"
+#include "includes/spi.h"
 
 //Command bytes for the slave to figure out what it needs to do.
 #define CMD_RECEIVE_RC_INPUTS 0xC3		//If the slave receives this, it expects to receive the RC input bytes.
@@ -13,14 +13,12 @@
 void comms_master_init()
 {
 	init_spi_master();		//Initialise communications module to be the SPI master.
-	DDRD &= ~_BV(2);		//Set D2 to an input for synchronisation for bi-directional SPI.
 }
 
 // Define a function to initialize SPI communication with the communication module
 void comms_slave_init()
 {
 	init_spi_slave();		//Initialise control module to be an SPI slave.
-	DDRD |= _BV(2);			//Set D2 to an output for synchronisation for bi-directional SPI.
 }
 
 //The next 2 functions operate on the communications module 

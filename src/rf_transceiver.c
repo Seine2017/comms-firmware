@@ -7,10 +7,7 @@
 
 // Function to initialize the RF transceiver as a transmitter
 void rf_transmitter_init()
-{
-	//Initialise ports for the SPI interface to the RFM12B module.
-	portInit();
-	
+{	
 	//Initialise RFM12B module to its transmitter mode.
 	txInit();
 }
@@ -18,14 +15,8 @@ void rf_transmitter_init()
 // Function to initialize the RF transceiver as a receiver
 void rf_receiver_init()
 {
-	//Initialise ports for the SPI interface to the RFM12B module.
-	portInit();
-	
 	//Initialise RFM12B module to its receiver mode.
 	rxInit();	
-	
-	//Reset the FIFO buffer. Need to do this before receiving every packet.
-	FIFO_reset();
 }
 
 // Function to send a data packet to the RF transmmitter using SPI
