@@ -35,7 +35,7 @@ uint16_t writeCommandTx(uint16_t cmd)
  		PORTD |= _BV(7);		//Set SCLK high to clock the RFM12B module.
 		temp <<= 1;				//Shift temp left by 1.
 
-		if(PINA & _BV(6))		//If MISO is high...
+		if(PIND & _BV(6))		//If MISO is high...
 		{
  			temp |= 0x0001;		//set the LSB of temp to 1. Implied else means it is set to 0.
  		}
