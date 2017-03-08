@@ -6,9 +6,9 @@
 
 // Encode the data
 static void encode_data(logg_data_packet_t* logg_data_packet, rf_data_packet_t* rf_data_packet){
-	rf_data_packet->roll = logg_data_packet->roll.value;
-	rf_data_packet->pitch = logg_data_packet->pitch.value;
-	rf_data_packet->yaw_vel = logg_data_packet->yaw_vel.value;
+	rf_data_packet->roll.value = logg_data_packet->roll.value;
+	rf_data_packet->pitch.value = logg_data_packet->pitch.value;
+	rf_data_packet->yaw_vel.value = logg_data_packet->yaw_vel.value;
 }
 
 // Decode the data
