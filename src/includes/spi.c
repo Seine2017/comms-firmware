@@ -47,6 +47,11 @@ uint8_t spi_rx(void)
 	return SPDR;				  	//Read received data from SPI data register, return it to be used.
 }
 
+uint8_t spi_read_data_register(void)
+{
+	return SPDR;					//Use only when interrupts are called. The interrupt clears SPIF so we can't just call spi_rx.
+}
+
 uint8_t spi_trx(uint8_t b)
 {
 	SPDR = b;				  		//Write data to the SPI data register. Initiates transmission.
