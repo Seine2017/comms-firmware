@@ -6,11 +6,22 @@
 
 #include "spi.h"
 
-void init_spi_master(void)
-{
-	DDRB = _BV(PB2) | _BV(PB3) | _BV(PB5);	  //Set Slave Select (/SS), MOSI and SCLK to outputs.
-	SPCR = _BV(SPE) | _BV(MSTR) | _BV(SPR0);  //Enable SPI, configure this device as master, set F_SCK = F_CPU/16 = 750 kHz.
-}
+#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega168P__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
+	void init_spi_master(void)
+	{
+		DDRB = _BV(PB2) | _BV(PB3) | _BV(PB5);	  //Set Slave Select (/SS), MOSI and SCLK to outputs.
+		SPCR = _BV(SPE) | _BV(MSTR) | _BV(SPR0);  //Enable SPI, configure this device as master, set F_SCK = F_CPU/16 = 750 kHz.
+	}
+#elif defined(__AVR_ATmega32U4__)
+	void init_spi_master(void)
+	{
+		DDRB =  _BV(PB2) | _BV(PB1);	  // MOSI and SCLK to outputs.
+		//DDRB |= _BV(PB0); 			//Set Slave Select (/SS)
+		SPCR = _BV(SPE) | _BV(MSTR) | _BV(SPR0);  //Enable SPI, configure this device as master, set F_SCK = F_CPU/16 = 750 kHz.
+	}
+#else
+  #error "Don't know how to set up SPI on the target device. Please update spi.c."
+#endif
 
 void init_spi_slave(void)
 {
