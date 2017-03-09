@@ -77,7 +77,7 @@ void receive_master_data_packet(logg_data_packet_t* logg_data_packet)
 	}
 	
 	//printf("Received logging data:\n");
-	printf("Roll: %d, Pitch: %d, Yaw velocity: %d\n", (int)logg_data_packet->roll.value, (int)logg_data_packet->pitch.value, (int)logg_data_packet->yaw_vel.value);
+	printf("Roll: %f, Pitch: %f, Yaw velocity: %f\n", (double)logg_data_packet->roll.value, (double)logg_data_packet->pitch.value, (double)logg_data_packet->yaw_vel.value);
 }
 
 // These next 2 functions operate on the control module (slave). Due to its inability to 
