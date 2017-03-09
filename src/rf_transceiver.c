@@ -43,19 +43,16 @@ void send_rf_packet(rf_data_packet_t* rf_data_packet)
 	for(i=0; i<4; i++) 
 	{
 		sendByte(rf_data_packet->roll.bytes[i]);		//Send roll.
-		//sendByte(0xD0+i);
 	}
 	
 	for(i=0; i<4; i++) 
 	{
 		sendByte(rf_data_packet->pitch.bytes[i]);		//Send pitch.
-		//sendByte(0xE4+i);
 	}
 	
 	for(i=0; i<4; i++) 
 	{
 		sendByte(rf_data_packet->yaw_vel.bytes[i]);		//Send yaw velocity.
-		//sendByte(0xF8+i);
 	}
 	
 	//DUMMY BYTES. Again, not required.

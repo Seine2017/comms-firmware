@@ -27,14 +27,12 @@ void init_SPI_interrupts(void)
 
 void enable_SPI_interrupts(void)
 {
-	//SPCR |= _BV(SPIE);				//Enable SPI interrupts. Don't need to enable global interrupts again.
-	sei();
+	SPCR |= _BV(SPIE);				//Enable SPI interrupts. Don't need to enable global interrupts again.
 }
 
 void disable_SPI_interrupts(void)
 {
-	cli();
-	//SPCR &= ~_BV(SPIE);				//Disable SPI interrupts. Don't disable global interrupts since it might break things.
+	SPCR &= ~_BV(SPIE);				//Disable SPI interrupts. Don't disable global interrupts since it might break things.
 }
 
 void spi_tx(uint8_t b)
