@@ -14,7 +14,7 @@ CFLAGS = -O3 -Wall -Wno-unused-function -mmcu=$(MCU)
 # Name of linker:
 LD = avr-gcc
 # Flags passed to linker:
-LDFLAGS = -mmcu=$(MCU) -Wl,-u,vfprintf -lprintf_flt
+LDFLAGS = -mmcu=$(MCU)
 # Name of objcopy tool:
 OBJCOPY = avr-objcopy
 # Name of size tool:
@@ -30,7 +30,7 @@ comms-firmware.hex: comms-firmware.elf
 	$(SIZE) $@
 
 comms-firmware.elf: $(OBJECTS)
-	$(LD) -lc -lm $(LDFLAGS) -o $@ $^ -lc
+	$(LD) $(LDFLAGS) -o $@ $^ -Wl,-u,vfprintf -lprintf_flt
 
 *.o: *.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ $<

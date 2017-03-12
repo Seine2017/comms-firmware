@@ -6,6 +6,7 @@
 #include "includes/spi.h"
 #include "debug.h"
 #include <util/delay.h>
+#include <stdio.h>
 
 // Define a function to initialize SPI communication with the control module
 void comms_master_init()
@@ -31,13 +32,17 @@ void send_master_data_packet(rc_data_packet_t* rc_data_packet)
 	spi_tx(CMD_RECEIVE_RC_INPUTS);
 	
 	//Brief delay so that the control module has time to react to the command byte.
-	_delay_us(5);
+	_delay_ms(10);
 	
 	//Send the 4 bytes of the RC input data packet.
 	spi_tx(rc_data_packet->channel_0);
+	_delay_ms(10);
 	spi_tx(rc_data_packet->channel_1);
+	_delay_ms(10);
 	spi_tx(rc_data_packet->channel_2);
+	_delay_ms(10);
 	spi_tx(rc_data_packet->channel_3);
+	_delay_ms(10);
 	
 	//printf("Sent RC inputs.\n");
 }
@@ -53,7 +58,7 @@ void receive_master_data_packet(logg_data_packet_t* logg_data_packet)
 	spi_tx(CMD_SEND_LOGGING_DATA);
 	
 	//Brief delay so that the control module has time to react to the command byte.
-	_delay_us(5);
+	_delay_ms(10);
 	
 	//printf("Receiving logging data...\n");
 	
@@ -61,19 +66,19 @@ void receive_master_data_packet(logg_data_packet_t* logg_data_packet)
 	for(i = 0 ; i < 4 ; i++)
 	{
 		logg_data_packet->roll.bytes[i] = spi_trx(0x00 + i);		//Receive the roll bytes.
-		_delay_us(5);
+	_delay_ms(10);
 	}
 	
 	for(i = 0 ; i < 4 ; i++)
 	{
 		logg_data_packet->pitch.bytes[i] = spi_trx(0x04 + i);		//Receive the pitch bytes.
-		_delay_us(5);
+	_delay_ms(10);
 	}
 	
 	for(i = 0 ; i < 4 ; i++)
 	{
 		logg_data_packet->yaw_vel.bytes[i] = spi_trx(0x08 + i);		//Receive the yaw velocity bytes.
-		_delay_us(5);
+	_delay_ms(10);
 	}
 	
 	//printf("Received logging data:\n");

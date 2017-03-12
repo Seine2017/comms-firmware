@@ -4,6 +4,8 @@
 #include "rf_transceiver_interface.h"
 #include "data_conversion.h"
 #include <avr/interrupt.h>
+#include <stdio.h>
+#include "debug.h"
 
 // Define the data packets that will flow through the communication module
 // as global variables
