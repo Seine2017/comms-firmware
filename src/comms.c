@@ -5,6 +5,7 @@
 #include "data_structures.h"
 #include "includes/spi.h"
 #include "debug.h"
+#include <stdio.h>
 #include <util/delay.h>
 
 // Define a function to initialize SPI communication with the control module

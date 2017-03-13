@@ -3,6 +3,7 @@
 #include "rc_receiver_interface.h"
 #include "rf_transceiver_interface.h"
 #include "data_conversion.h"
+#include "debug.h"
 #include <avr/interrupt.h>
 #include <stdio.h>
 
@@ -15,7 +16,7 @@ rc_data_packet_t rc_data_packet; // data pocket with the input signals from the 
 int main() {
   //Initialize all the submodules
    init_debug_uart0();
-
+	printf("HELOO????.\n");
   receiver_init();			//Initialise RC receiver.
   rf_transmitter_init();
   comms_master_init(); 		//Initialise communication with the control module. SPI initialised in here.
