@@ -1,10 +1,3 @@
-/*
-* PWM_IN.c
-*
-* Created on: 27 Feb 2017
-* Last edited on: 02/03/2017
-* Author: Pawel Kostkowski
-*/
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
